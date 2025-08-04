@@ -26,7 +26,7 @@ services:
       - ./data/export:/usr/src/paperless/export
 
   renamer:
-    image: ghcr.io/paperless-ngx/paperless-ngx:2.17.1
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
     env_file: .env
     entrypoint: ["/bin/sh","-c"]
     command: |
