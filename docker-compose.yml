@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   paperless:
-    image: ghcr.io/paperless-ngx/paperless-ngx:2.17.1
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
     depends_on: [postgres, redis]
     env_file: .env
     restart: unless-stopped
