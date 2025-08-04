@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:14
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+
+  paperless:
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.17.1
+    depends_on: [postgres, redis]
+    env_file: .env
+    restart: unless-stopped
+    ports:
+      - "8050:8000"
+    volumes:
+      - ./data/media:/data/media
+      - ./data/postgres:/data/db
+      - ./data/consume:/usr/src/paperless/consume
+      - ./data/export:/usr/src/paperless/export
+
+  renamer:
+    image: ghcr.io/paperless-ngx/paperless-ngx:2.17.1
+    env_file: .env
+    entrypoint: ["/bin/sh","-c"]
+    command: |
+      while true; do
+        sleep 3600
+        document_renamer --force --no-color
+      done
+    volumes:
+      - ./data/media:/data/media
+      - ./data/postgres:/data/db
+    depends_on: [postgres, redis]
+
+volumes: {}
